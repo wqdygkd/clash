@@ -1,0 +1,9 @@
+# https://github.com/Centralmatrix3/Matrix-io/blob/master/Clash/Ruleset/QQMusic.yaml
+
+payload:
+  - DOMAIN,aqqmusic.tc.qq.com
+  - DOMAIN-SUFFIX,music.qq.com
+  - DOMAIN-SUFFIX,music.tc.qq.com
+  - DOMAIN-SUFFIX,qqmusic.qq.com
+  - DOMAIN-SUFFIX,tencentmusic.com
+  - DOMAIN-SUFFIX,y.qq.com
