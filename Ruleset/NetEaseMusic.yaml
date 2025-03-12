@@ -1,5 +1,6 @@
 # https://github.com/Centralmatrix3/Matrix-io/blob/master/Clash/Ruleset/NetEaseMusic.yaml
 
+
 payload:
   - PROCESS-NAME,NeteaseMusic
   - DOMAIN-SUFFIX,163yun.com
