@@ -1,64 +1,25 @@
+# port: 78901
+# socks-port: 7891
+# redir-port: 7892
+# tproxy-port: 7893
+mixed-port: 7890
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: info
+external-controller:
+
 proxies:
-proxy-providers:
-  my:
-    type: http
-    path: ./proxy_providers/my.yaml
-    url: https://gist.githubusercontent.com/wqdygkd/194197b017a46fdf078fc1ced29ffc35/raw/
-    interval: 3600
-    health-check:
-      enable: true
-      url: http://www.gstatic.com/generate_204
-      interval: 300
 
 proxy-groups:
-  - name: 自动选择
-    type: url-test
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    use: [my]
-  - name: 节点选择
-    type: select
-    use: [my]
-    proxies:
-      - 自动选择
-      - 全球直连
-  - name: 网易云音乐
-    icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/netease-music.svg
-    type: select
-    use: [my]
-    proxies:
-      - 全球直连
-      - 节点选择
-  - name: QQ音乐
-    icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/qq-music.svg
-    type: select
-    use: [my]
-    proxies:
-      - 全球直连
-      - 节点选择
-  - name: 抖音
-    icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/douyin.svg
-    type: select
-    use: [my]
-    proxies:
-      - 全球直连
-      - 节点选择
-  - name: 电报信息
-    icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/telegram.svg
-    type: select
-    use: [my]
-    proxies:
-      - 节点选择
-  - name: 全球直连
-    type: select
-    proxies:
-      - DIRECT
-  - name: 全球拦截
-    icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/block.svg
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
+  - { name: '节点选择', type: select, proxies: [自动选择, 全球直连] }
+  - { name: 自动选择, type: url-test, proxies: [], url: http://www.gstatic.com/generate_204, interval: 86400 }
+  - { name: 网易云音乐, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/netease-music.svg }
+  - { name: QQ音乐, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/qq-music.svg }
+  - { name: 抖音, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/douyin.svg }
+  - { name: 全球直连, type: select, proxies: [DIRECT] }
+  - { name: 电报信息, type: select, proxies: [节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/telegram.svg }
+  - { name: 全球拦截, type: select, proxies: [REJECT, DIRECT], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/block.svg }
 
 rule-providers:
   NetEaseMusic:
@@ -106,29 +67,6 @@ rules:
 
   - MATCH,DIRECT
 
-external-controller: ""
-ipv6: true
-mode: rule
-mixed-port: 7890
-socks-port: 7891
-port: 7892
-redir-port: 0
-tproxy-port: 0
-allow-lan: true
-unified-delay: false
-tcp-concurrent: false
-log-level: info
-find-process-mode: strict
-bind-address: "*"
-lan-allowed-ips:
-  - 0.0.0.0/0
-  - ::/0
-lan-disallowed-ips: []
-authentication: []
-skip-auth-prefixes:
-  - 127.0.0.1/32
-  - 172.16.0.197/0
-
 tun:
   enable: false
   stack: mixed
@@ -146,7 +84,7 @@ dns:
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
-    - "*"
+    - '*'
     - +.lan
     - +.local
     - time.*.com
@@ -164,26 +102,6 @@ dns:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
   direct-nameserver: []
-
-sniffer:
-  enable: true
-  parse-pure-ip: true
-  force-dns-mapping: true
-  override-destination: false
-  sniff:
-    HTTP:
-      ports:
-        - 80
-        - 443
-      override-destination: false
-    TLS:
-      ports:
-        - 443
-    QUIC:
-      ports:
-        - 443
-  skip-domain:
-    - +.push.apple.com
 profile:
   store-selected: true
   store-fake-ip: true
