@@ -17,6 +17,7 @@ proxy-groups:
   - { name: 网易云音乐, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/netease-music.svg }
   - { name: QQ音乐, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/qq-music.svg }
   - { name: 抖音, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/douyin.svg }
+  - { name: Apple, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/apple.svg }
   - { name: 全球直连, type: select, proxies: [DIRECT], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/1f3af.svg }
   - { name: 电报信息, type: select, proxies: [节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/telegram.svg }
   - { name: 全球拦截, type: select, proxies: [REJECT, DIRECT], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/block.svg }
@@ -41,6 +42,12 @@ rule-providers:
     url: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/Ruleset/DouYin.yaml
     path: ./ruleset/DouYin.yaml
     interval: 86400
+  Apple:
+    type: http
+    behavior: classical
+    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt
+    path: ./ruleset/apple.yaml
+    interval: 86400
   ChinaDomain:
     type: http
     behavior: classical
@@ -59,6 +66,7 @@ rules:
   - RULE-SET,NetEaseMusic,网易云音乐
   - RULE-SET,QQMusic,QQ音乐
   - RULE-SET,DouYin,抖音
+  - RULE-SET,Apple,Apple
   - GEOSITE,category-ads-all,全球拦截
   - GEOSITE,private,全球直连
   # - GEOSITE,youtube,节点选择
