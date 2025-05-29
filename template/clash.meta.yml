@@ -45,7 +45,7 @@ rule-providers:
   Apple:
     type: http
     behavior: classical
-    url: https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt
+    url: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/Ruleset/Apple.yaml
     path: ./ruleset/apple.yaml
     interval: 86400
   ChinaDomain:
