@@ -52,13 +52,13 @@ rule-providers:
     type: http
     behavior: classical
     url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/ChinaDomain.yaml
-    path: ./ruleset/DouYin.yaml
+    path: ./ruleset/ChinaDomain.yaml
     interval: 86400
   ChinaIp:
     type: http
     behavior: classical
     url: https://cdn.jsdelivr.net/gh/ACL4SSR/ACL4SSR@master/Clash/Providers/ChinaIp.yaml
-    path: ./ruleset/DouYin.yaml
+    path: ./ruleset/ChinaIp.yaml
     interval: 86400
 
 
