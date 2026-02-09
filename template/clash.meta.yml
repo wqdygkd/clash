@@ -61,7 +61,6 @@ rule-providers:
     path: ./ruleset/ChinaIp.yaml
     interval: 86400
 
-
 rules:
   - RULE-SET,NetEaseMusic,网易云音乐
   - RULE-SET,QQMusic,QQ音乐
@@ -80,6 +79,7 @@ rules:
   - GEOSITE,category-games@cn,全球直连
   - GEOSITE,cn,全球直连
   - RULE-SET,ChinaDomain,全球直连
+  - RULE-SET,ChinaIp,全球直连
   - GEOSITE,gfw,节点选择
 
   #GEOIP 规则
@@ -101,28 +101,39 @@ tun:
 
 dns:
   enable: true
+  prefer-h3: true
   ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-filter:
-    - '*'
+  fake-ip-filter: #fakeip 过滤，以下地址不会下发 fakeip 映射用于连接
+    - "*"
     - +.lan
     - +.local
     - time.*.com
     - ntp.*.com
     - +.market.xiaomi.com
-  use-hosts: false
-  use-system-hosts: false
-  default-nameserver:
-    - 223.5.5.5
-    - 119.29.29.29
-  nameserver:
-    - https://dns.alidns.com/dns-query
-    - https://doh.pub/dns-query
-  proxy-server-nameserver:
-    - https://dns.alidns.com/dns-query
-    - https://doh.pub/dns-query
-  direct-nameserver: []
+    - 'geosite:private'
+  fake-ip-filter-mode: blacklist #可选 blacklist/whitelist ，默认 blacklist ，whitelist 即只有匹配成功才返回 fake-ip
+  use-hosts: false #是否回应配置中的 hosts ，默认 true
+  use-system-hosts: true #是否查询系统 hosts ，默认 true
+  respect-rules: true #dns 连接遵守路由规则，需配置 proxy-server-nameserver
+  default-nameserver: #默认 DNS, 用于解析 DNS 服务器 的域名，必须为 IP, 可为加密 DNS
+  - tls://119.28.28.28:853
+  - tls://119.29.29.29:853
+  - tls://223.5.5.5:853
+  - tls://223.5.5.6:853
+  nameserver: #默认的域名解析服务器
+    - https://8.8.4.4/dns-query
+    - https://8.8.8.8/dns-query
+    - https://1.1.1.1/dns-query
+    - https://1.0.0.1/dns-query
+  proxy-server-nameserver: #代理节点域名解析服务器，仅用于解析代理节点的域名，如果不填则遵循 nameserver-policy 、nameserver 和 fallback 的配置
+  - tls://119.28.28.28:853
+  - tls://119.29.29.29:853
+  - tls://223.5.5.5:853
+  - tls://223.5.5.6:853
+  direct-nameserver: #用于 direct 出口域名解析的 DNS 服务器，如果不填则遵循 nameserver-policy 、nameserver 和 fallback 的配置
+    - system
 profile:
   store-selected: true
   store-fake-ip: true
