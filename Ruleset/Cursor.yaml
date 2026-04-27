@@ -1,0 +1,3 @@
+payload:
+  - PROCESS-NAME,Cursor
+  - DOMAIN-SUFFIX,cursor.sh

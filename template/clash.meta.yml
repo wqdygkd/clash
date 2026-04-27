@@ -4,26 +4,110 @@
 # tproxy-port: 7893
 mixed-port: 7890
 allow-lan: true
-bind-address: '*'
+bind-address: "*"
 mode: rule
 log-level: info
 external-controller:
 
 proxies:
 
+proxy-providers:
+  my:
+    type: http
+    path: ./proxy_providers/my.yaml
+    url: https://gist.githubusercontent.com/wqdygkd/194197b017a46fdf078fc1ced29ffc35/raw/
+    interval: 3600
+    health-check:
+      enable: true
+      url: http://www.gstatic.com/generate_204
+      interval: 300
+
 proxy-groups:
-  - { name: '节点选择', type: select, proxies: [自动选择, 全球直连], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/rocket_color.svg }
-  - { name: 自动选择, type: url-test, proxies: [], url: http://www.gstatic.com/generate_204, interval: 86400, icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/26a1.svg }
-  - { name: 网易云音乐, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/netease-music.svg }
-  - { name: QQ音乐, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/qq-music.svg }
-  - { name: 抖音, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/douyin.svg }
-  - { name: Apple, type: select, proxies: [全球直连,节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/apple.svg }
-  - { name: 全球直连, type: select, proxies: [DIRECT], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/1f3af.svg }
-  - { name: 电报信息, type: select, proxies: [节点选择], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/telegram.svg }
-  - { name: 全球拦截, type: select, proxies: [REJECT, DIRECT], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/block.svg }
-  - { name: 漏网之鱼, type: select, proxies: [DIRECT], icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/fish_color.svg }
+  - {
+      name: "节点选择",
+      type: select,
+      proxies: [ 自动选择, 全球直连 ],
+      use: [my],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/rocket_color.svg,
+    }
+  - {
+      name: 自动选择,
+      type: url-test,
+      proxies: [],
+      use: [my],
+      url: http://www.gstatic.com/generate_204,
+      interval: 86400,
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/26a1.svg,
+    }
+  - {
+      name: 网易云音乐,
+      type: select,
+      proxies: [ 全球直连, 节点选择 ],
+      use: [my],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/netease-music.svg,
+    }
+  - {
+      name: Cursor,
+      type: select,
+      proxies: [ 全球直连, 节点选择 ],
+      use: [my],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/cursor.svg,
+    }
+  - {
+      name: QQ音乐,
+      type: select,
+      proxies: [ 全球直连, 节点选择 ],
+      use: [my],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/qq-music.svg,
+    }
+  - {
+      name: 抖音,
+      type: select,
+      proxies: [ 全球直连, 节点选择 ],
+      use: [my],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/douyin.svg,
+    }
+  - {
+      name: Apple,
+      type: select,
+      proxies: [ 全球直连, 节点选择 ],
+      use: [my],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/apple.svg,
+    }
+  - {
+      name: 全球直连,
+      type: select,
+      proxies: [ DIRECT ],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/1f3af.svg,
+    }
+  - {
+      name: 电报信息,
+      type: select,
+      proxies: [ 节点选择 ],
+      use: [my],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/telegram.svg,
+    }
+  - {
+      name: 全球拦截,
+      type: select,
+      proxies: [ REJECT, DIRECT ],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/block.svg,
+    }
+  - {
+      name: 漏网之鱼,
+      type: select,
+      proxies: [ DIRECT ],
+      use: [my],
+      icon: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/IconSet/fish_color.svg,
+    }
 
 rule-providers:
+  Cursor:
+    type: http
+    behavior: classical
+    url: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/Ruleset/Cursor.yaml
+    path: ./ruleset/Cursor.yaml
+    interval: 86400
   NetEaseMusic:
     type: http
     behavior: classical
@@ -63,6 +147,7 @@ rule-providers:
 
 rules:
   - RULE-SET,NetEaseMusic,网易云音乐
+  - RULE-SET,Cursor,Cursor
   - RULE-SET,QQMusic,QQ音乐
   - RULE-SET,DouYin,抖音
   - RULE-SET,Apple,Apple
@@ -105,34 +190,32 @@ dns:
   ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
-  fake-ip-filter: #fakeip 过滤，以下地址不会下发 fakeip 映射用于连接
+  fake-ip-filter:
+    #fakeip 过滤，以下地址不会下发 fakeip 映射用于连接
     - "*"
     - +.lan
     - +.local
     - time.*.com
     - ntp.*.com
     - +.market.xiaomi.com
-    - 'geosite:private'
+    - "geosite:private"
   fake-ip-filter-mode: blacklist #可选 blacklist/whitelist ，默认 blacklist ，whitelist 即只有匹配成功才返回 fake-ip
   use-hosts: false #是否回应配置中的 hosts ，默认 true
   use-system-hosts: true #是否查询系统 hosts ，默认 true
   respect-rules: true #dns 连接遵守路由规则，需配置 proxy-server-nameserver
-  default-nameserver: #默认 DNS, 用于解析 DNS 服务器 的域名，必须为 IP, 可为加密 DNS
-  - tls://119.28.28.28:853
-  - tls://119.29.29.29:853
-  - tls://223.5.5.5:853
-  - tls://223.5.5.6:853
-  nameserver: #默认的域名解析服务器
-    - https://8.8.4.4/dns-query
-    - https://8.8.8.8/dns-query
-    - https://1.1.1.1/dns-query
-    - https://1.0.0.1/dns-query
-  proxy-server-nameserver: #代理节点域名解析服务器，仅用于解析代理节点的域名，如果不填则遵循 nameserver-policy 、nameserver 和 fallback 的配置
-  - tls://119.28.28.28:853
-  - tls://119.29.29.29:853
-  - tls://223.5.5.5:853
-  - tls://223.5.5.6:853
-  direct-nameserver: #用于 direct 出口域名解析的 DNS 服务器，如果不填则遵循 nameserver-policy 、nameserver 和 fallback 的配置
+  default-nameserver:
+    #默认 DNS, 用于解析 DNS 服务器 的域名，必须为 IP, 可为加密 DNS
+    - tls://223.5.5.5
+  nameserver:
+    #默认的域名解析服务器
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  proxy-server-nameserver:
+    #代理节点域名解析服务器，仅用于解析代理节点的域名，如果不填则遵循 nameserver-policy 、nameserver 和 fallback 的配置
+    - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
+  direct-nameserver:
+    #用于 direct 出口域名解析的 DNS 服务器，如果不填则遵循 nameserver-policy 、nameserver 和 fallback 的配置
     - system
 profile:
   store-selected: true
