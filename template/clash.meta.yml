@@ -3,11 +3,13 @@
 # redir-port: 7892
 # tproxy-port: 7893
 mixed-port: 7890
-allow-lan: true
-bind-address: "*"
+allow-lan: false
+bind-address: 127.0.0.1
 mode: rule
 log-level: info
-external-controller:
+# external-controller: ""
+# 如将 allow-lan 改为 true 并监听到局域网，务必设置 secret
+# secret: "change-me-to-a-strong-random-string"
 
 proxies:
 
@@ -130,7 +132,7 @@ rule-providers:
     type: http
     behavior: classical
     url: https://cdn.jsdelivr.net/gh/wqdygkd/clash@main/Ruleset/Apple.yaml
-    path: ./ruleset/apple.yaml
+    path: ./ruleset/Apple.yaml
     interval: 86400
   ChinaDomain:
     type: http
@@ -192,7 +194,6 @@ dns:
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
     #fakeip 过滤，以下地址不会下发 fakeip 映射用于连接
-    - "*"
     - +.lan
     - +.local
     - time.*.com
@@ -207,9 +208,20 @@ dns:
     #默认 DNS, 用于解析 DNS 服务器 的域名，必须为 IP, 可为加密 DNS
     - tls://223.5.5.5
   nameserver:
-    #默认的域名解析服务器
+    # 默认的域名解析服务器（直连优先，适合解析国内域名）
     - https://doh.pub/dns-query
     - https://dns.alidns.com/dns-query
+  fallback:
+    # 兜底解析服务器（更适合解析非国内/被墙域名；配合 respect-rules 可走代理链路）
+    - https://cloudflare-dns.com/dns-query
+    - https://dns.google/dns-query
+  nameserver-policy:
+    # 国内域名走直连 DNS，减少误判与延迟
+    "geosite:cn": https://dns.alidns.com/dns-query
+    "geosite:private": system
+    # 非中国/被墙域名优先用 fallback
+    "geosite:gfw": https://cloudflare-dns.com/dns-query
+    "geosite:geolocation-!cn": https://cloudflare-dns.com/dns-query
   proxy-server-nameserver:
     #代理节点域名解析服务器，仅用于解析代理节点的域名，如果不填则遵循 nameserver-policy 、nameserver 和 fallback 的配置
     - https://doh.pub/dns-query
